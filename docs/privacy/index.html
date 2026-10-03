@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Sider ChatGPT 隐私政策：了解网页材料如何提交给 ChatGPT、本地保存哪些信息，以及如何控制和删除数据。">
+  <meta name="color-scheme" content="light dark">
+  <title>隐私政策 · Sider ChatGPT</title>
+  <link rel="stylesheet" href="../site.css">
+</head>
+<body>
+  <a class="skip" href="#policy">跳到隐私政策正文</a>
+  <div class="wrap">
+    <header class="masthead">
+      <a class="wordmark" href="../" aria-label="Sider ChatGPT 项目首页"><span class="mark" aria-hidden="true">S</span>Sider ChatGPT</a>
+      <nav class="external" aria-label="项目链接"><a href="https://github.com/Firefly1007/sider-chatgpt">GitHub ↗</a><a href="https://github.com/Firefly1007/sider-chatgpt/releases/latest">下载扩展 ↗</a></nav>
+    </header>
+    <div class="hero">
+      <div class="eyebrow">PRIVACY / 数据与隐私</div>
+      <h1>隐私政策</h1>
+      <p class="lede">你选择的内容，如何被使用。<br>这里说明 Sider ChatGPT 在网页阅读、划词问答和侧栏对话中处理哪些信息，以及你可以怎样控制它们。</p>
+      <div class="meta"><span>维护者 <b>Firefly1007</b></span><span>生效 / 更新 <b><time datetime="2026-10-04">2026 年 10 月 4 日</time></b></span><span>适用版本 <b>1.0.0</b></span></div>
+    </div>
+    <div class="layout">
+      <nav class="toc" aria-label="隐私政策目录">
+        <div class="toc-label">本页目录</div>
+        <a href="#scope">01 · 适用范围</a><a href="#data">02 · 处理的信息</a><a href="#flow">03 · 何时发送内容</a><a href="#storage">04 · 保存与删除</a><a href="#third-parties">05 · 第三方服务</a><a href="#controls">06 · 你的选择</a><a href="#security">07 · 权限与安全</a><a href="#contact">08 · 更新与联系</a>
+        <small>本政策页面不使用统计脚本、广告或第三方字体。网站托管服务的日志处理见下方说明。</small>
+      </nav>
+      <main id="policy">
+        <div class="summary" aria-labelledby="summary-title">
+          <h2 id="summary-title">先了解这三点</h2>
+          <ul><li>执行任务时，问题、选中文字和相关网页材料会发送给 <strong>ChatGPT</strong>；部分功能会附带提取后的整篇网页正文。</li><li>扩展没有开发者自建的数据接收服务器；设置保存在本地，任务正文不写入扩展的持久化存储。</li><li>ChatGPT 自身的数据处理适用其政策。<strong>关闭浮窗不等于删除服务端数据。</strong></li></ul>
+        </div>
+        <section id="scope">
+          <h2><span class="num">01</span>适用范围</h2>
+          <p>Sider ChatGPT 是由 <a href="https://github.com/Firefly1007">Firefly1007</a> 维护的 Microsoft Edge 扩展，用于通过已登录的 ChatGPT 网页辅助阅读、解释、翻译、总结、搜索、脑图整理与问答。本政策覆盖本扩展及其隐私政策网站。</p>
+          <p>这是独立项目，不代表 OpenAI、Microsoft 或其他同名产品。你在 ChatGPT 原生网页中使用账号、上传文件或使用其他原生功能时，同时受该服务的条款、隐私政策与账号设置约束。</p>
+        </section>
+        <section id="data">
+          <h2><span class="num">02</span>我们处理哪些信息</h2>
+          <div class="table-wrap"><table><thead><tr><th scope="col">信息类型</th><th scope="col">处理范围与用途</th></tr></thead><tbody>
+            <tr><td>问题与对话</td><td>你输入的问题、追问、用于附加的草稿及 ChatGPT 返回的回答，用于执行任务、展示结果和继续对话。</td></tr>
+            <tr><td>网站内容</td><td>所选文本、选区邻近段落或提取后的网页正文，用于为任务提供材料和背景。内容提取会排除表单、密码输入框、可编辑区和扩展自身界面。</td></tr>
+            <tr><td>当前网页信息</td><td>任务所涉及网页的标题及 URL，可随网页背景提交给 ChatGPT。扩展读取当前标签页及导航状态以核对来源，不建立完整浏览历史档案。</td></tr>
+            <tr><td>设置与任务标识</td><td>扩展开关、目标语言、思考程度、排除站点、界面兼容设置，以及关联标签页、文档和任务的技术标识，用于保存偏好和管理任务。</td></tr>
+          </tbody></table></div>
+          <p>扩展不专门收集身份、健康、财务或定位资料，不提取账号密码、Cookie、登录令牌或 API Key，也不记录鼠标轨迹、按键或点击行为用于分析。你主动提交的正文或对话仍可能包含个人信息；扩展<strong>不提供完整的敏感信息识别或自动脱敏保证</strong>。</p>
+        </section>
+        <section id="flow">
+          <h2><span class="num">03</span>内容何时会离开浏览器</h2>
+          <ul>
+            <li><strong>仅划词：</strong>显示悬浮栏，不发送问题或网页材料。</li>
+            <li><strong>点击快捷功能：</strong>解释、翻译、总结、搜索和脑图等功能会提交所选文本及对应背景。“解释”和“问 AI”使用提取后的网页正文作为背景；其他划词功能使用选区附近背景。“问 AI”在你输入问题并提交后发送。</li>
+            <li><strong>附加选区：</strong>划词栏的“附加”只把文本写入同窗口侧栏草稿，等待你发送。</li>
+            <li><strong>附加当前网页：</strong>点击侧栏输入框中的回形针会直接提交当前网页标题、URL 和提取后的正文；已有文本草稿会暂存并尝试恢复。</li>
+            <li><strong>预加载：</strong>启用扩展时会预加载 ChatGPT 网页及备用临时会话。预加载不发送问题或网页正文，但会产生到 ChatGPT 的正常网络连接。</li>
+          </ul>
+          <p>提交通过 ChatGPT 网页及其原生对话控件完成。扩展没有将这些材料另行上传给开发者的接口，不使用开发者自建服务转发对话，不通过广告或数据交易使用任务内容。</p>
+        </section>
+        <section id="storage">
+          <h2><span class="num">04</span>保存多久，如何删除</h2>
+          <p><strong>扩展本地设置：</strong>用户偏好保存在浏览器扩展的本地存储中。用于会话关联的技术标识保存在会话存储中；任务清理、浏览器会话结束等情况会更新或移除这些标识。扩展不使用云同步存储保存任务内容。</p>
+          <p><strong>运行中的内容：</strong>问题、回答和暂存草稿在任务运行期间保留在页面或内存中，不写入扩展的持久化存储。关闭浮窗会释放其后台任务；你主动复制或导出的文本、图片和文件由你自行管理。</p>
+          <p><strong>ChatGPT 服务端：</strong>浮窗使用 ChatGPT 临时聊天，侧栏使用普通 ChatGPT 网页。具体保存时间、历史记录、训练使用和删除方式由 OpenAI 的政策及你的账号设置决定，本扩展不能代替其完成服务端删除。</p>
+          <div class="note"><p>关闭浮窗、卸载扩展或清除扩展存储，都不表示已经删除提交给 ChatGPT 的内容。请在 ChatGPT 中管理相关对话及数据控制选项。</p></div>
+        </section>
+        <section id="third-parties">
+          <h2><span class="num">05</span>第三方服务与网站托管</h2>
+          <h3>ChatGPT / OpenAI</h3>
+          <p>ChatGPT 接收你提交的问题和材料。加载其网页时，浏览器可能发送该站点的登录 Cookie、IP 地址、设备及连接信息，网页也会执行自身的站点脚本；扩展本身不读取或提取这些认证凭据。此类处理由 OpenAI 负责，可能涉及你所在国家或地区以外的服务器。</p>
+          <p>请参阅 <a href="https://openai.com/policies/privacy-policy/">OpenAI 隐私政策</a>及<a href="https://help.openai.com/en/articles/8914046-temporary-chat-in-chatgpt">临时聊天说明</a>，并检查自己的账号数据设置。</p>
+          <h3>GitHub Pages / GitHub Issues</h3>
+          <p>本隐私政策网站由 GitHub Pages 托管。页面不设置统计 Cookie，不加载分析脚本、广告或远程字体；GitHub 为提供托管与安全服务可能处理访问日志及 IP 地址，适用 <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub 隐私声明</a>。</p>
+          <p>如果你主动在仓库 Issues 联系维护者，你的 GitHub 用户名及提交内容会出现在公开的 Issue 中，并由 GitHub 保存。请勿提交密码、令牌、完整私人对话或其他敏感材料。</p>
+        </section>
+        <section id="controls">
+          <h2><span class="num">06</span>你的选择与控制</h2>
+          <ul><li>在扩展设置中关闭功能或添加排除站点；也可以通过浏览器的扩展管理限制网站访问权限。限制权限后，部分功能可能不可用。</li><li>只在愿意提交相关内容的页面上启动任务；对敏感网页可先关闭扩展。请特别注意整篇正文背景和“附加当前网页”的直接发送行为。</li><li>在浮窗中停止生成或关闭任务，在 ChatGPT 中管理历史对话、临时聊天和数据控制选项。</li><li>卸载扩展以移除其浏览器本地设置；自行删除已经导出或复制的内容。</li><li>通过下方联系渠道提出与本扩展有关的隐私问题。涉及 ChatGPT 账号或服务端数据的请求，需要通过 OpenAI 提供的渠道处理。</li></ul>
+        </section>
+        <section id="security">
+          <h2><span class="num">07</span>权限与安全边界</h2>
+          <p>扩展在普通 HTTP/HTTPS 网页中使用内容脚本处理划词和用户启动的材料提取，并使用侧栏、隐藏文档、标签页、导航和存储权限管理界面及任务。网站访问权限覆盖多个网站，以支持不同网页上的阅读辅助功能。</p>
+          <p>为在扩展自己的框架中显示 ChatGPT，扩展对<strong>由本扩展发起、目标为 ChatGPT 的子框架响应</strong>移除 <code>Content-Security-Policy</code> 与 <code>X-Frame-Options</code> 响应头。该规则不作用于普通网页发起的嵌入请求，关闭扩展功能后移除。</p>
+          <p>扩展自身脚本、Markdown、公式及脑图依赖随安装包提供，不通过远程脚本更新扩展逻辑。返回内容作为文本、Markdown 或经过清洗的图表呈现。任何软件和网络服务都无法保证绝对安全，请避免提交无权分享的内容。</p>
+        </section>
+        <section id="contact">
+          <h2><span class="num">08</span>政策更新与联系</h2>
+          <p>如果扩展的数据处理方式发生变化，维护者会更新本页面及更新日期，并同步调整扩展商店的数据披露。本政策描述当前版本的实际处理方式。</p>
+          <div class="contact"><p><strong>维护者：</strong><a href="https://github.com/Firefly1007">Firefly1007</a></p><p><strong>联系渠道：</strong><a href="https://github.com/Firefly1007/sider-chatgpt/issues">Sider ChatGPT · GitHub Issues ↗</a></p><p class="muted">反馈和隐私请求请先描述问题类型，避免在公开 Issue 中附上敏感内容。</p></div>
+        </section>
+      </main>
+    </div>
+    <footer class="footer"><span>Sider ChatGPT · 由 Firefly1007 维护的独立项目</span><a href="#policy">返回政策正文 ↑</a></footer>
+  </div>
+</body>
+</html>

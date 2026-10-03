@@ -1,0 +1,5 @@
+:root{font:13px/1.5 system-ui,"Microsoft YaHei",sans-serif;--cgp-bg:#fff;--cgp-text:#242424;--cgp-border:#d9d9d9;--cgp-muted:#666;--cgp-hover:#f2f4f7;--cgp-status:#f4f6fa;--s-color-bg-dialogs:var(--cgp-bg);--color-text-primary:var(--cgp-text);--bg-base-1:var(--cgp-bg);color-scheme:light}
+:root[data-cgp-theme=dark]{--cgp-bg:#202123;--cgp-text:#eee;--cgp-border:#444;--cgp-muted:#bbb;--cgp-hover:#333;--cgp-status:#292b31;color-scheme:dark}
+*{box-sizing:border-box}html,body{height:100%;margin:0}body{display:flex;flex-direction:column;background:var(--cgp-bg);color:var(--cgp-text)}[hidden]{display:none!important}
+#panel-status{flex:0 0 auto;margin:0 8px 8px;padding:6px 8px;border-radius:7px;background:var(--cgp-status);color:var(--cgp-muted);font-size:12px;overflow-wrap:anywhere}
+#cgp-chatgpt-frame{display:block;border:0;width:100%;flex:1;min-height:100px;background:var(--cgp-bg)}

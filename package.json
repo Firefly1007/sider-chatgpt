@@ -1,0 +1,28 @@
+{
+  "name": "sider-chatgpt",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Edge extension using native ChatGPT webpages",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test tests/*.test.js",
+    "test:browser": "node --test tests/browser/*.test.js",
+    "check": "node scripts/check.mjs"
+  },
+  "dependencies": {
+    "@mozilla/readability": "^0.6.0",
+    "dompurify": "^3.2.7",
+    "katex": "0.16.47",
+    "marked": "18.0.14",
+    "marked-cjk-friendly": "0.1.2",
+    "mermaid": "^11.12.0",
+    "turndown": "7.2.4",
+    "turndown-plugin-gfm": "1.0.2"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.10",
+    "jsdom": "^27.0.0",
+    "playwright": "^1.55.1"
+  }
+}

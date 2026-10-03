@@ -1,0 +1,27 @@
+node_modules/
+dist/
+.test-output/
+*.log
+
+# Local research, diagnostics and generated artifacts are not publication inputs.
+artifacts/
+vendor/
+docs/*
+!docs/index.html
+!docs/.nojekyll
+!docs/site.css
+!docs/privacy/
+scripts/*
+!scripts/build.mjs
+!scripts/check.mjs
+!scripts/icons.mjs
+!scripts/package.py
+.env
+.env.*
+*.pem
+*.key
+Thumbs.db
+.DS_Store
+
+# Release archives are attachments, never source-tree files.
+*.zip

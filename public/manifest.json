@@ -1,0 +1,85 @@
+{
+  "manifest_version": 3,
+  "name": "Sider ChatGPT",
+  "version": "1.0.0",
+  "description": "在划词浮窗和原生侧栏中使用已登录的 ChatGPT 网页。",
+  "permissions": [
+    "offscreen",
+    "storage",
+    "tabs",
+    "sidePanel",
+    "webNavigation",
+    "declarativeNetRequestWithHostAccess"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "icons": {
+    "16": "icons/assistant-16.png",
+    "32": "icons/assistant-32.png",
+    "48": "icons/assistant-48.png",
+    "128": "icons/assistant-128.png"
+  },
+  "action": {
+    "default_title": "",
+    "default_icon": {
+      "16": "icons/assistant-16.png",
+      "32": "icons/assistant-32.png"
+    }
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chatgpt.com/*"
+      ],
+      "js": [
+        "chatgpt.js"
+      ],
+      "all_frames": true,
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "exclude_matches": [
+        "https://chatgpt.com/*"
+      ],
+      "js": [
+        "content-loader.js"
+      ],
+      "all_frames": true,
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "content.js",
+        "chunks/*.js",
+        "math/*.css",
+        "math/fonts/*.woff2"
+      ],
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ]
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'none'; frame-src https://chatgpt.com; base-uri 'none'"
+  },
+  "minimum_chrome_version": "120"
+}

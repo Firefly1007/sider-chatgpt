@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sider ChatGPT 设置</title><link rel="stylesheet" href="options.css"></head>
+<body><main>
+  <h1>Sider ChatGPT 设置</h1>
+  <form id="settings-form">
+    <label class="toggle"><input id="enabled" type="checkbox">启用扩展</label>
+    <p class="hint">关闭后停止插件任务，并恢复被本插件隐藏的豆包网页浮层。</p>
+    <label class="toggle"><input id="suppressDoubao" type="checkbox">隐藏豆包网页浮层</label>
+    <p class="hint">仅处理网页浮层，不修改已安装豆包的设置。</p>
+    <label for="targetLanguage">翻译目标语言</label><input id="targetLanguage" type="text" maxlength="80" required placeholder="例如：中文、English、日本語">
+    <label for="excludedHosts">排除站点</label><textarea id="excludedHosts" rows="5" spellcheck="false" placeholder="每行一个域名，例如 example.com 或 *.example.org"></textarea>
+    <p class="hint">填写域名，不包含 https://、路径或端口。</p>
+    <p>最近一次划词手动选择：<output id="manualMode"></output></p>
+    <p class="hint">在划词问答和追问中调整可用模式。快捷动作的固定模式不改变此偏好；侧栏原生聊天保留自己的模型设置。</p>
+    <button id="save-settings" type="submit" disabled>保存设置</button>
+    <p id="settings-status" role="status" aria-live="polite"></p>
+  </form>
+</main><script type="module" src="options.js"></script></body>
+</html>
