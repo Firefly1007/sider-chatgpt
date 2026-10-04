@@ -41,16 +41,21 @@ jobs:
       - name: Validate build output
         run: npm run check
 
-      - name: Package release archives
-        run: python scripts/package.py
+      - name: Package release archive
+        run: |
+          python scripts/package.py
+          version="${GITHUB_REF_NAME#v}"
+          mv "artifacts/Sider-ChatGPT-可加载包.zip" "artifacts/sider-chatgpt-${version}.zip"
+          sha256sum "artifacts/sider-chatgpt-${version}.zip" > artifacts/SHA256SUMS.txt
+          rm "artifacts/Sider-ChatGPT-源码.zip"
 
       - name: Publish GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          version="${GITHUB_REF_NAME#v}"
           gh release create "${GITHUB_REF_NAME}" \
-            artifacts/Sider-ChatGPT-可加载包.zip \
-            artifacts/Sider-ChatGPT-源码.zip \
-            artifacts/Sider-ChatGPT-SHA256.txt \
-            --title "${GITHUB_REF_NAME}" \
+            "artifacts/sider-chatgpt-${version}.zip" \
+            artifacts/SHA256SUMS.txt \
+            --title "Sider ChatGPT ${version}" \
             --generate-notes
