@@ -35,11 +35,8 @@ jobs:
       - name: Build extension
         run: npm run build
 
-      - name: Install Microsoft Edge
-        uses: microsoft/setup-msedge@v2
-
-      - name: Install Playwright Chromium
-        run: npx playwright install --with-deps chromium
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium msedge
 
       - name: Run tests
         run: npm test
