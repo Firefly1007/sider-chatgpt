@@ -35,6 +35,9 @@ jobs:
       - name: Build extension
         run: npm run build
 
+      - name: Install Microsoft Edge
+        uses: microsoft/setup-msedge@v2
+
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
 
@@ -49,7 +52,7 @@ jobs:
           python scripts/package.py
           version="${GITHUB_REF_NAME#v}"
           mv "artifacts/Sider-ChatGPT-可加载包.zip" "artifacts/sider-chatgpt-${version}.zip"
-          sha256sum "artifacts/sider-chatgpt-${version}.zip" > artifacts/SHA256SUMS.txt
+          (cd artifacts && sha256sum "sider-chatgpt-${version}.zip") > artifacts/SHA256SUMS.txt
           rm "artifacts/Sider-ChatGPT-源码.zip"
 
       - name: Publish GitHub Release
