@@ -98,7 +98,13 @@ export function createSessionManager(chrome, options = {}) {
       if (!/receiving end does not exist|could not establish connection/i.test(error?.message || '')
         || !chrome.scripting?.executeScript) throw error;
       await chrome.scripting.executeScript({ target: { tabId, frameIds: [0] }, files: ['content-loader.js'] });
-      return await chrome.tabs.sendMessage(tabId, message, { frameId: 0 });
+      let lastError = error;
+      for (let attempt = 0; attempt < 10; attempt++) {
+        await delay(100);
+        try { return await chrome.tabs.sendMessage(tabId, message, { frameId: 0 }); }
+        catch (retryError) { lastError = retryError; }
+      }
+      throw lastError;
     }
   }
   function settleRpc(endpoint) {
