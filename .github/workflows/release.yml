@@ -74,8 +74,29 @@ jobs:
           TAG: ${{ steps.release-tag.outputs.tag }}
           VERSION: ${{ steps.release-tag.outputs.version }}
         run: |
+          cat > "${RUNNER_TEMP}/release-notes.md" <<'RELEASE_NOTES'
+          Sider ChatGPT 为 Edge 提供划词浮窗与 ChatGPT 侧栏，支持解释、翻译、总结、问答、搜索、脑图及持续追问。
+          
+          ## 下载与安装
+          
+          下载下方 **ZIP 安装包**。GitHub 自动生成的 Source code 压缩包仅包含源码，不能直接加载。
+          
+          1. 解压 ZIP，找到包含 `manifest.json` 的 `Sider-ChatGPT` 文件夹。
+          2. 打开 `edge://extensions/`，启用开发人员模式，选择“加载解压缩的扩展”，加载该文件夹。
+          3. 在普通标签页登录 ChatGPT，并刷新要使用划词功能的网页。
+          
+          无需安装 Node.js、Python 或配置 API Key。需要用户自己的 ChatGPT 登录状态；可用模型、额度及服务由 ChatGPT 决定。
+          
+          ## 数据与隐私
+          
+          执行任务会向 ChatGPT 提交问题、选区及相关网页背景；部分功能使用提取后的整篇网页正文。关闭浮窗不等于删除 ChatGPT 服务端的数据。
+          
+          - [隐私政策](https://firefly1007.github.io/sider-chatgpt/privacy/)
+          - [安装说明与权限用途](https://github.com/Firefly1007/sider-chatgpt#readme)
+          - [问题反馈](https://github.com/Firefly1007/sider-chatgpt/issues)
+          RELEASE_NOTES
           gh release create "${TAG}" \
             "artifacts/sider-chatgpt-${VERSION}.zip" \
             artifacts/SHA256SUMS.txt \
             --title "Sider ChatGPT ${VERSION}" \
-            --generate-notes
+            --notes-file "${RUNNER_TEMP}/release-notes.md"
