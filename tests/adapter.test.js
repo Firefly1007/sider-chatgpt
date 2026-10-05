@@ -513,6 +513,42 @@ test('hidden-page DOM mutations advance waits even if browser timers never fire'
   assert.equal(tracked.active.size, 0); assert.equal(task.wake, null); assert.equal(tracked.clearedTimers.length, 1);
 });
 
+test('hidden-page replies stream character changes and replaced native nodes before completion', { timeout: 1000 }, async () => {
+  const f = fixture(), tracked = suspendTimersAndTrackObservers(f);
+  f.adapter.responseTimeoutMs = 1000;
+  f.nativeSend({ answer: '', complete: false });
+  const { done } = f.start();
+  try {
+    await new Promise(setImmediate);
+    assert.equal(f.events.at(-1).state, 'waiting');
+    const body = f.document.querySelector('.markdown');
+    body.textContent = '容';
+    await new Promise(setImmediate);
+    assert.equal(f.events.at(-1).state, 'streaming');
+    assert.equal(f.events.at(-1).text, '容');
+
+    // React can update the existing Text node rather than append a new child.
+    body.firstChild.appendData('器');
+    await new Promise(setImmediate);
+    assert.equal(f.events.at(-1).text, '容器');
+
+    const assistant = body.parentElement, replacement = assistant.cloneNode(true);
+    replacement.querySelector('.markdown').textContent = '容器组（Pod）';
+    assistant.replaceWith(replacement);
+    await new Promise(setImmediate);
+    assert.deepEqual(f.events.filter(event => event.state === 'streaming').map(event => event.text), ['容', '容器', '容器组（Pod）']);
+    assert.equal(f.events.some(event => event.state === 'completed'), false);
+    assert.equal(f.events.filter(event => event.state === 'streaming').every(event => event.requestId === 'r1' && event.sessionId === 's1'), true);
+
+    f.document.querySelector('[data-testid="stop-button"]').remove();
+    f.document.querySelector('article').insertAdjacentHTML('beforeend', '<button data-testid="copy-turn-action-button">Copy</button>');
+    await done;
+    assert.equal(f.events.at(-1).state, 'completed');
+    assert.equal(f.events.at(-1).text, '容器组（Pod）');
+    assert.equal(f.sends, 1); assert.equal(tracked.active.size, 0);
+  } finally { await f.adapter.dispose({ sessionId: 's1' }); await done; f.dom.window.close(); }
+});
+
 test('hidden-page cancellation wakes promptly and disconnects observer/deadline timer', { timeout: 1000 }, async () => {
   const f = fixture(), tracked = suspendTimersAndTrackObservers(f);
   const task = { url: f.document.location.href, cancelled: false }; f.adapter.active = task;

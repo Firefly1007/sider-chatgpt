@@ -1,6 +1,6 @@
 # Sider ChatGPT
 
-在 Microsoft Edge 的划词浮窗和侧栏中使用自己的 ChatGPT 账号，帮助理解正在阅读的网页。当前版本：**1.0.0**。
+在 Microsoft Edge 的划词浮窗和侧栏中使用自己的 ChatGPT 账号，帮助理解正在阅读的网页。当前版本：**1.0.2**。
 
 [下载可加载扩展](https://github.com/Firefly1007/sider-chatgpt/releases/latest) · [隐私政策](https://firefly1007.github.io/sider-chatgpt/privacy/) · [问题反馈](https://github.com/Firefly1007/sider-chatgpt/issues)
 
@@ -8,7 +8,7 @@
 
 ## 安装
 
-1. 在 [Releases](https://github.com/Firefly1007/sider-chatgpt/releases/latest) 下载 **sider-chatgpt-1.0.0.zip**。GitHub 自动生成的 Source code 压缩包是源码，不能直接安装。
+1. 在 [Releases](https://github.com/Firefly1007/sider-chatgpt/releases/latest) 下载 **sider-chatgpt-1.0.2.zip**。GitHub 自动生成的 Source code 压缩包是源码，不能直接安装。
 2. 将 ZIP 解压到固定目录。找到其中 **Sider-ChatGPT** 文件夹，确认内有 `manifest.json`。
 3. 打开 `edge://extensions/`，启用“开发人员模式”，点击“加载解压缩的扩展”，选择上述文件夹。
 4. 在普通标签页登录 [ChatGPT](https://chatgpt.com/)，刷新需要划词的网页。

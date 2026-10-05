@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Sider ChatGPT",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "在划词浮窗和原生侧栏中使用已登录的 ChatGPT 网页。",
   "permissions": [
     "offscreen",

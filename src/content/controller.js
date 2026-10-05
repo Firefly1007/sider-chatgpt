@@ -17,19 +17,19 @@ const EXCLUDED = 'input,textarea,select,[contenteditable],[data-cgp-ui],[data-cg
 const PATCH_STYLES = `
 :host{all:initial;font-family:"Segoe UI Variable Text","Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;font-size:14px;color:#202124}
 *{box-sizing:border-box}button,input,select,textarea{font:inherit}button{border:0;cursor:pointer}button:disabled{opacity:.38;cursor:default}[hidden]{display:none!important}button:focus-visible,a:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:2px solid var(--cgp-link);outline-offset:2px}
-.cgp-anchor{position:absolute;z-index:2147483647}.cgp-popover{width:440px;max-width:calc(100vw - 24px);max-height:calc(100vh - 24px);display:flex;flex-direction:column;overflow:auto;scrollbar-width:thin}.container-yap8B5{gap:0}
-.cgp-body{min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;padding:0 20px;display:flex;flex-direction:column;gap:16px}.cgp-body>*{flex-shrink:0}.cgp-body>:empty{display:none}.cgp-selected{border:1px solid var(--cgp-border);border-radius:9px;padding:8px 10px;color:var(--cgp-muted);font-size:12px;line-height:19px;white-space:pre-wrap;overflow-wrap:anywhere}.cgp-selected summary{cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cgp-selected[open] summary{margin-bottom:8px}.cgp-selected>div{max-height:140px;overflow:auto}.cgp-context-note{margin-top:8px;border-top:1px solid var(--cgp-border);padding-top:8px}
+.cgp-anchor{position:absolute;z-index:2147483647}.cgp-popover{width:440px;max-width:calc(100vw - 24px);max-height:calc(100dvh - 24px);display:flex;flex-direction:column;overflow:hidden;scrollbar-width:thin}.container-yap8B5{gap:0}
+.cgp-body{min-height:0;max-height:400px;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;padding:0 16px;display:flex;flex-direction:column;gap:12px}.cgp-body>*{flex-shrink:0}.cgp-body>:empty{display:none}.cgp-selected{border:1px solid var(--cgp-border);border-radius:9px;padding:8px 10px;color:var(--cgp-muted);font-size:12px;line-height:19px;white-space:pre-wrap;overflow-wrap:anywhere}.cgp-selected summary{cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cgp-selected[open] summary{margin-bottom:8px}.cgp-selected>div{max-height:140px;overflow:auto}.cgp-context-note{margin-top:8px;border-top:1px solid var(--cgp-border);padding-top:8px}
 .cgp-state{display:inline-flex;align-items:center;gap:5px;font-size:11px;line-height:20px;color:var(--cgp-muted)}.cgp-state::before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0}.cgp-popover[data-state=completed] .cgp-state{color:var(--cgp-success)}.cgp-popover[data-state=failed] .cgp-state,.cgp-popover[data-state=interrupted] .cgp-state{color:var(--cgp-error)}
-.cgp-error{color:var(--cgp-error);font-size:13px;line-height:1.6;white-space:pre-wrap}.cgp-mode{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--cgp-muted);min-width:0}.cgp-mode select{min-width:0;max-width:112px;height:24px;border:0;border-radius:6px;padding:2px 4px;font-size:11px}.cgp-mode-note{font-size:11px;color:var(--cgp-muted);line-height:17px}.cgp-availability{padding:7px 2px 0}.cgp-sources{display:flex;flex-direction:column;gap:6px;font-size:12px}.cgp-sources a{color:var(--cgp-link);overflow-wrap:anywhere}
-.cgp-footer{padding:14px 20px 16px;flex-shrink:0}.cgp-composer{background:var(--cgp-soft);border:1px solid var(--cgp-border);border-radius:12px;padding:9px}.cgp-composer:focus-within{border-color:var(--cgp-muted);box-shadow:0 0 0 2px var(--cgp-soft)}.cgp-composer-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;flex-wrap:wrap}.cgp-form{display:flex;gap:8px;align-items:flex-end}.cgp-form textarea{width:100%;resize:vertical;min-height:38px;max-height:120px;border:0;border-radius:6px;padding:8px 4px;line-height:22px;background:transparent;color:var(--cgp-text)}.cgp-form textarea:focus-visible{outline:none}.cgp-send{display:flex;align-items:center;justify-content:center;width:32px;height:32px;margin-bottom:3px;border-radius:9px;background:var(--cgp-brand);color:var(--cgp-on-brand);flex-shrink:0}.cgp-send:hover:not(:disabled){filter:brightness(1.15)}.cgp-send svg{width:18px;height:18px}.cgp-operations{display:flex;gap:2px}.cgp-result{overflow-wrap:anywhere;line-height:1.8;user-select:text}.cgp-result p{margin:0 0 12px}.cgp-result p:last-child{margin-bottom:0}.cgp-result pre{overflow:auto;white-space:pre;background:var(--cgp-soft);border-radius:10px;padding:12px}.cgp-result table{border-collapse:collapse;display:block;overflow:auto}.cgp-result th,.cgp-result td{border:1px solid var(--cgp-border);padding:7px 10px}.cgp-result a{color:var(--cgp-link)}.cgp-options button[aria-pressed=true]{color:var(--cgp-text);background:var(--cgp-soft)}
-@media(max-width:480px){.header-container-cL372Q{padding-left:14px;padding-right:14px}.cgp-body{padding:0 14px}.cgp-footer{padding:12px 14px}.cgp-mode select{max-width:100px}}
+.cgp-error{color:var(--cgp-error);font-size:13px;line-height:1.6;white-space:pre-wrap}.cgp-mode{position:relative;display:flex;align-items:center;gap:5px;height:24px;padding:1px 2px;font-size:11px;color:var(--cgp-text);min-width:0;border-radius:6px}.cgp-mode-value{white-space:nowrap}.cgp-mode-chevron{width:6px;height:6px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg);margin-top:-3px;margin-right:2px}.cgp-mode select{position:absolute;inset:0;width:100%;height:100%;min-width:0;border:0;opacity:0;cursor:pointer}.cgp-mode:focus-within{outline:2px solid var(--cgp-link);outline-offset:2px}.cgp-mode-note{font-size:11px;color:var(--cgp-muted);line-height:17px}.cgp-availability{padding:7px 2px 0}.cgp-sources{display:flex;flex-direction:column;gap:6px;font-size:12px}.cgp-sources a{color:var(--cgp-link);overflow-wrap:anywhere}
+.cgp-footer{padding:8px 16px 12px;flex-shrink:0;display:flex;flex-direction:column;gap:8px}.cgp-composer{background:var(--cgp-soft);border:1px solid var(--cgp-border);border-radius:10px;padding:4px 6px}.cgp-composer:focus-within{border-color:var(--cgp-muted);box-shadow:0 0 0 2px var(--cgp-soft)}.cgp-composer-controls{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-shrink:0}.cgp-form{display:flex;align-items:center;gap:8px}.cgp-form textarea{flex:1;min-width:0;resize:vertical;min-height:28px;max-height:120px;border:0;border-radius:6px;padding:3px 4px;line-height:22px;background:transparent;color:var(--cgp-text)}.cgp-form textarea:focus-visible{outline:none}.cgp-send{display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;background:var(--cgp-brand);color:var(--cgp-on-brand);flex-shrink:0}.cgp-send:hover:not(:disabled){filter:brightness(1.15)}.cgp-send svg{width:16px;height:16px}.cgp-operations{display:flex;gap:2px;margin-left:-9px}.cgp-result{overflow-wrap:anywhere;line-height:1.8;user-select:text}.cgp-result p{margin:0 0 12px}.cgp-result p:last-child{margin-bottom:0}.cgp-result pre{overflow:auto;white-space:pre;background:var(--cgp-soft);border-radius:10px;padding:12px}.cgp-result table{border-collapse:collapse;display:block;overflow:auto}.cgp-result th,.cgp-result td{border:1px solid var(--cgp-border);padding:7px 10px}.cgp-result a{color:var(--cgp-link)}.cgp-options button[aria-pressed=true]{color:var(--cgp-text);background:var(--cgp-soft)}
+@media(max-width:480px){.header-container-cL372Q{padding-left:14px;padding-right:14px}.cgp-body{padding:0 14px}.cgp-footer{padding:8px 14px 10px}}
 
 .cgp-mindmap-tools{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}.cgp-mindmap-tools select{max-width:200px;border:1px solid #ddd;border-radius:8px;padding:4px}.cgp-mindmap-canvas{max-height:360px;min-height:160px;overflow:auto}.cgp-mindmap-source{font-size:12px;margin-top:8px}.cgp-mindmap-source pre{overflow:auto;max-height:200px;white-space:pre;background:#f6f6f6;padding:8px}
 .cgp-diagram-image{display:block;max-width:none;max-height:none;background:#fff}.cgp-diagram-viewer{position:fixed;inset:20px;z-index:2147483647;display:flex;flex-direction:column;padding:16px;border:1px solid var(--cgp-border);border-radius:12px;background:var(--cgp-bg);color:var(--cgp-text);box-shadow:var(--cgp-shadow)}.cgp-diagram-expanded{flex:1;min-height:0;overflow:auto}
 .cgp-mindmap-expanded{position:fixed;inset:0;z-index:2147483647;overscroll-behavior:contain;display:flex;flex-direction:column;width:100%;height:100%;padding:20px;background:var(--cgp-bg);color:var(--cgp-text)}.cgp-mindmap-expanded .cgp-mindmap-tools{flex-shrink:0}.cgp-mindmap-expanded .cgp-mindmap-canvas{flex:1;min-height:0;max-height:none}.cgp-mindmap-expanded .cgp-mindmap-source{flex-shrink:0;max-height:25vh;overflow:auto}
 .cgp-result .cgp-math{display:inline-block;max-width:100%;overflow-x:auto;overflow-y:hidden;vertical-align:middle;padding:.2em 0}.cgp-result .cgp-math-display{display:block}.cgp-result .katex{white-space:nowrap;overflow-wrap:normal;color:inherit}.cgp-result .katex-display{margin:.4em 0}
 .cgp-popup-drag-handle,.cgp-drag-handle{cursor:grab;touch-action:none;user-select:none}.cgp-drag-handle{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:25px;height:20px;margin-left:5px;border-left:1px solid var(--cgp-border);color:var(--cgp-muted,#777)}.cgp-drag-handle svg{width:18px;height:18px;pointer-events:none}.cgp-dragging{cursor:grabbing!important}
-.cgp-popup-drag-handle{position:absolute;top:calc(50% - 7px);left:50%;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;width:44px;height:28px;color:var(--cgp-muted,#777)}.cgp-popup-drag-handle::before{content:"";width:16px;height:5px;border-top:1px solid currentColor;border-bottom:1px solid currentColor;opacity:.65}.cgp-popup-drag-handle:hover::before{opacity:1}.cgp-popover>.container-yap8B5{padding-top:12px}
+.cgp-popup-drag-handle{position:absolute;top:calc(50% - 5px);left:50%;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;width:44px;height:28px;color:var(--cgp-muted,#777)}.cgp-popup-drag-handle::before{content:"";width:16px;height:5px;border-top:1px solid currentColor;border-bottom:1px solid currentColor;opacity:.65}.cgp-popup-drag-handle:hover::before{opacity:1}.cgp-popover>.container-yap8B5{padding-top:10px;flex:1;min-height:0}
 .cgp-result strong{font-weight:700}.cgp-result em{font-style:italic}.cgp-result del{text-decoration:line-through}.cgp-result h1,.cgp-result h2,.cgp-result h3,.cgp-result h4,.cgp-result h5,.cgp-result h6{font-weight:650;line-height:1.35;margin:16px 0 8px}.cgp-result h1{font-size:1.5em}.cgp-result h2{font-size:1.3em}.cgp-result h3{font-size:1.15em}.cgp-result h4,.cgp-result h5,.cgp-result h6{font-size:1em}.cgp-result h6{color:var(--cgp-muted)}.cgp-result>:first-child{margin-top:0}.cgp-result ul,.cgp-result ol{margin:8px 0;padding-left:1.7em}.cgp-result ul{list-style:disc}.cgp-result ol{list-style:decimal}.cgp-result li{margin:4px 0}.cgp-result li>p{margin:4px 0}.cgp-result blockquote{border-left:3px solid var(--cgp-border);margin:10px 0;padding:4px 12px;color:var(--cgp-muted)}.cgp-result blockquote p:last-child{margin-bottom:0}.cgp-result code{font-family:Consolas,"SFMono-Regular",monospace;font-size:.92em;border-radius:4px;padding:2px 4px}.cgp-result pre code{font-size:inherit;padding:0;border-radius:0}.cgp-result pre{font-size:12px;line-height:1.5}.cgp-result table{margin:10px 0;max-width:100%;font-size:13px}.cgp-result th{background:var(--cgp-soft);font-weight:650}.cgp-result th:not([align]){text-align:left}.cgp-result td,.cgp-result th{vertical-align:top}.cgp-result hr{border:0;border-top:1px solid var(--cgp-border);margin:14px 0}.cgp-result input[type=checkbox]{margin:0 6px 0 0;accent-color:var(--cgp-brand);vertical-align:middle}
 `;
 
@@ -229,7 +229,7 @@ export function createContentController({ document, chrome, initialSettings = DE
       <div class="container-yap8B5">
         <div class="header-container-cL372Q"><div class="cgp-heading"><div class="caption-ElsTYI"></div><div class="cgp-state" role="status" aria-live="polite"></div></div><span class="cgp-popup-drag-handle" role="img" aria-label="拖动浮窗" title="按住把手拖动浮窗"></span><div class="options-node-nfubHU cgp-options"></div></div>
         <div class="cgp-body"><details class="cgp-selected"><summary></summary><div></div><div class="cgp-mode-note cgp-context-note"></div></details><div class="result-YM4GhA cgp-result"></div><div class="cgp-sources"></div><div class="cgp-error" role="alert" hidden></div><div class="cgp-login" hidden></div></div>
-        <div class="cgp-footer"><div class="cgp-composer"><div class="cgp-composer-top"><label class="cgp-mode">思考程度 <select aria-label="思考程度"></select></label><div class="cgp-operations"></div></div><form class="cgp-form"><textarea aria-label="问题或追问" rows="1"></textarea><button type="submit" class="cgp-send" aria-label="发送">↑</button></form></div><div class="cgp-mode-note cgp-availability">实际可用档位将在发送前由网页确认</div></div>
+        <div class="cgp-footer"><div class="cgp-operations"></div><div class="cgp-composer"><form class="cgp-form"><textarea aria-label="问题或追问" rows="1"></textarea><div class="cgp-composer-controls"><label class="cgp-mode"><span class="cgp-mode-value" aria-hidden="true"></span><span class="cgp-mode-chevron" aria-hidden="true"></span><select aria-label="思考程度"></select></label><button type="submit" class="cgp-send" aria-label="发送">↑</button></div></form></div><div class="cgp-mode-note cgp-availability" role="status" hidden></div></div>
       </div>`;
     state.panel = panel;
     const query = selector => panel.querySelector(selector);
@@ -270,11 +270,11 @@ export function createContentController({ document, chrome, initialSettings = DE
       for (const mode of modes) if (MODES[mode]) { const option = document.createElement('option'); option.value = mode; option.textContent = MODES[mode]; select.append(option); }
       for (const item of unavailable) if (MODES[item.mode] && !modes.includes(item.mode)) {
         const option = document.createElement('option'); option.value = item.mode; option.disabled = true;
-        option.textContent = `${item.label || MODES[item.mode]}（${item.reason || '当前不可用'}）`; option.title = item.reason || '当前不可用'; select.append(option);
+        option.textContent = item.mode === previous ? MODES[item.mode] : `${item.label || MODES[item.mode]}（${item.reason || '当前不可用'}）`; option.title = item.reason || '当前不可用'; select.append(option);
       }
       // Never silently change an unavailable requested mode.
       if (![...select.options].some(option => option.value === previous)) {
-        const option = document.createElement('option'); option.value = previous; option.textContent = `${MODES[previous]}（当前不可用）`; option.disabled = true; select.prepend(option);
+        const option = document.createElement('option'); option.value = previous; option.textContent = MODES[previous]; option.title = '当前不可用'; option.disabled = true; select.prepend(option);
       }
       select.value = previous;
     }
@@ -282,16 +282,17 @@ export function createContentController({ document, chrome, initialSettings = DE
     const loadModes = async () => {
       if (state.loadingModes || current !== state || BUSY.has(state.state)) return;
       state.loadingModes = true;
-      state.query('.cgp-availability').textContent = '正在读取 ChatGPT 网页实际档位…';
+      state.query('.cgp-availability').hidden = true;
       const response = await send('GET_CAPABILITIES', { sessionId: state.sessionId });
       state.loadingModes = false;
       if (current !== state) return;
       const capabilities = response?.capabilities;
       if (response?.ok && Array.isArray(capabilities?.modes)) {
         state.updateModes(capabilities.modes, capabilities.unavailable);
-        state.query('.cgp-availability').textContent = '已由 ChatGPT 网页确认可用档位';
+        state.query('.cgp-availability').hidden = true;
       } else {
         state.query('.cgp-availability').textContent = response?.error?.message || '无法读取可用档位，请重新打开选单重试';
+        state.query('.cgp-availability').hidden = false;
       }
     };
     select.addEventListener('pointerdown', loadModes);
@@ -299,7 +300,7 @@ export function createContentController({ document, chrome, initialSettings = DE
     select.addEventListener('keydown', event => { if (event.key === 'ArrowDown' || event.key === ' ') loadModes(); });
     select.addEventListener('change', async () => {
       if (select.disabled || !MODES[select.value] || select.selectedOptions[0]?.disabled) { select.value = state.mode; return; }
-      state.mode = select.value;
+      state.mode = select.value; update(state);
       const desiredMode = state.mode;
       const response = await send('UPDATE_SETTINGS', { patch: { manualMode: desiredMode } });
       if (response?.ok && state.mode === desiredMode) settings = { ...settings, ...response.settings };
@@ -315,8 +316,14 @@ export function createContentController({ document, chrome, initialSettings = DE
     update(state);
     if (state.input.action === 'ask') question.focus();
   }
+  function fitPopup(state) {
+    const panel = state.panel, rect = panel.getBoundingClientRect();
+    const top = Math.max(0, Math.min(rect.top, window.innerHeight - rect.height - 12));
+    if (top !== rect.top) panel.style.top = `${top + (panel.style.position === 'fixed' ? 0 : window.scrollY)}px`;
+  }
   function update(state) {
     state.panel.dataset.state = state.state;
+    state.query('.cgp-mode-value').textContent = MODES[state.mode];
     state.query('.cgp-state').textContent = state.state === 'draft' ? '输入问题后发送' : STATES[state.state] || state.state;
     const busy = BUSY.has(state.state);
     state.query('.cgp-form textarea').disabled = busy || Boolean(state.pending) || state.sessionUsable === false;
@@ -326,6 +333,7 @@ export function createContentController({ document, chrome, initialSettings = DE
     state.copy.disabled = !state.text;
     state.retry.disabled = busy || Boolean(state.pending) || !state.lastRound;
     state.retry.textContent = state.sessionUsable === false ? '重新开始' : '重试';
+    fitPopup(state);
 
   }
   function errorState(state, error) {
@@ -444,6 +452,8 @@ export function createContentController({ document, chrome, initialSettings = DE
     if (!state || event.channel !== 'cgp' || event.type !== 'TASK_EVENT') return false;
     if (state.pending && !state.requestId) { if (state.events.length >= 100) state.events.shift(); state.events.push(event); return true; }
     if (event.sessionId !== state.sessionId || event.requestId !== state.requestId || state.stopRequested) return false;
+    const body = state.query('.cgp-body');
+    const scrollTop = body.scrollTop;
     state.state = event.state;
     if (event.state === 'interrupted' || ['SESSION_LOST', 'EXECUTION_LOST'].includes(event.error?.code)) state.sessionUsable = false;
     if (typeof event.text === 'string') { state.text = event.text; renderAnswer(state.query('.cgp-result'), state.text); }
@@ -458,13 +468,15 @@ export function createContentController({ document, chrome, initialSettings = DE
     if (event.sources) renderSources(state.query('.cgp-sources'), event.sources);
     if (event.mode && MODES[event.mode]) { state.mode = event.mode; state.query('select').value = event.mode; }
     const modes = event.capabilities?.modes;
-    if (Array.isArray(modes)) { state.updateModes(modes, event.capabilities?.unavailable); state.query('.cgp-availability').textContent = '已由 ChatGPT 网页确认可用档位'; }
+    if (Array.isArray(modes)) { state.updateModes(modes, event.capabilities?.unavailable); state.query('.cgp-availability').hidden = true; }
     const diagnostics = event.diagnostics || event.error?.diagnostics;
     if (diagnostics) state.query('.cgp-error').dataset.cgpDiagnostics = JSON.stringify(diagnostics);
     if (event.error) {
       errorState(state, event.error);
     }
-    update(state); return true;
+    update(state);
+    body.scrollTop = scrollTop;
+    return true;
   }
   function handleMessage(message) {
     if (message?.channel !== 'cgp') return null;
@@ -494,6 +506,8 @@ export function createContentController({ document, chrome, initialSettings = DE
   const keyDown = event => { if (event.key === 'Escape') { close(); removeToolbar(); selection = null; clearSelectionHighlight(); } };
   document.addEventListener('pointerdown', pointerDown, true); document.addEventListener('pointerup', pointerUp);
   document.addEventListener('keyup', keyUp); document.addEventListener('keydown', keyDown);
+  const resize = () => { if (current) fitPopup(current); };
+  window.addEventListener('resize', resize);
   const unload = () => close(); window.addEventListener('pagehide', unload);
   const stopObservingTheme = observePageTheme(document, theme => {
     host.dataset.cgpTheme = theme.theme;
@@ -507,7 +521,7 @@ export function createContentController({ document, chrome, initialSettings = DE
     dispose() {
       disposed = true; stopObservingTheme(); close(); removeToolbar(); selection = null; clearSelectionHighlight(); suppression.dispose(); removeMathStyles(); host.remove();
       document.removeEventListener('pointerdown', pointerDown, true); document.removeEventListener('pointerup', pointerUp);
-      document.removeEventListener('keyup', keyUp); document.removeEventListener('keydown', keyDown); window.removeEventListener('pagehide', unload);
+      document.removeEventListener('keyup', keyUp); document.removeEventListener('keydown', keyDown); window.removeEventListener('pagehide', unload); window.removeEventListener('resize', resize);
     },
   };
 }

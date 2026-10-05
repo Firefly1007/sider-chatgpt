@@ -3,6 +3,93 @@ import assert from 'node:assert/strict';
 import { build } from 'esbuild';
 import { chromium } from 'playwright';
 
+test('popup caps its scroll area like Doubao, preserves reading position and keeps the compact controls visible', async () => {
+  const bundle = await build({ stdin: { contents: `import {createContentController} from './src/content/controller.js';
+    window.controller=createContentController({document,chrome:{runtime:{sendMessage:async message=>{
+      if(message.type==='START_TASK')return {ok:true,sessionId:'session',requestId:'request'};
+      if(message.type==='GET_CAPABILITIES')return {ok:true,capabilities:{modes:['instant','high']}};
+      return {ok:true};
+    }}}});`, resolveDir: process.cwd() }, bundle: true, write: false, format: 'iife', platform: 'browser' });
+  const browser = await chromium.launch({ headless: true, channel: 'msedge' });
+  try {
+    const page = await browser.newPage({ viewport: { width: 1000, height: 800 } });
+    await page.route('**/*', route => route.abort());
+    await page.setContent('<!doctype html><style>body{margin:0;background:#202328;color:#edf0f4}</style><main>Offline streaming fixture</main>');
+    await page.addScriptTag({ content: bundle.outputFiles[0].text });
+    await page.evaluate(() => window.controller.open({ action: 'translate', origin: 'selection', selectedText: 'pod' }, { left: 500, bottom: 740 }));
+    await page.waitForFunction(() => window.controller.state.requestId === 'request');
+    const popup = page.getByRole('dialog'), body = popup.locator('.cgp-body');
+    async function stream(text, state = 'streaming') {
+      await page.evaluate(async ({ text, state }) => {
+        window.controller.acceptEvent({ channel: 'cgp', type: 'TASK_EVENT', sessionId: 'session', requestId: 'request', state, text, capabilities: { modes: ['instant', 'high'] } });
+        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      }, { text, state });
+    }
+    await stream('First visible chunk');
+    assert.equal((await popup.locator('.cgp-result').textContent()).trimEnd(), 'First visible chunk');
+    assert.equal(await popup.locator('.cgp-state').textContent(), '生成中');
+    assert.equal(await popup.locator('.cgp-availability').isVisible(), false);
+    assert.equal(await popup.getByLabel('思考程度').evaluate(select => select.selectedOptions[0].textContent), '即时');
+    const long = Array.from({ length: 35 }, (_, i) => `Paragraph ${i + 1}: visible streamed content.`).join('\n\n');
+    await stream(long);
+    const geometry = await popup.evaluate(panel => {
+      const body = panel.querySelector('.cgp-body'), footer = panel.querySelector('.cgp-footer');
+      const composer = panel.querySelector('.cgp-composer'), operations = panel.querySelector('.cgp-operations');
+      return { bodyHeight: body.clientHeight, shellOverflow: panel.scrollHeight - panel.clientHeight,
+        scrollTop: body.scrollTop,
+        operationsBeforeComposer: operations.getBoundingClientRect().bottom <= composer.getBoundingClientRect().top,
+        operationsInComposer: composer.contains(operations), footerBottom: footer.getBoundingClientRect().bottom,
+        bottom: panel.getBoundingClientRect().bottom, bodyPadding: getComputedStyle(body).paddingLeft };
+    });
+    assert.equal(geometry.bodyHeight, 400);
+    assert.equal(geometry.shellOverflow, 0, 'Only the answer area should scroll');
+    assert.equal(geometry.scrollTop, 0, 'Output stays at the top until the user scrolls');
+    assert.equal(geometry.operationsBeforeComposer, true); assert.equal(geometry.operationsInComposer, false);
+    assert.ok(geometry.bottom <= 788 && geometry.footerBottom <= geometry.bottom);
+    assert.equal(geometry.bodyPadding, '16px');
+    const modeBox = await popup.getByLabel('思考程度').boundingBox(), sendBox = await popup.getByRole('button', { name: '发送', exact: true }).boundingBox();
+    const inputBox = await popup.getByLabel('问题或追问').boundingBox();
+    assert.ok(inputBox.x + inputBox.width < modeBox.x);
+    assert.ok(Math.abs(inputBox.y + inputBox.height / 2 - sendBox.y - sendBox.height / 2) <= 1);
+    assert.ok((await popup.locator('.cgp-composer').boundingBox()).height <= 38, 'Initial input area stays compact');
+    assert.ok(modeBox.x + modeBox.width < sendBox.x);
+    assert.ok(Math.abs(modeBox.y + modeBox.height / 2 - sendBox.y - sendBox.height / 2) <= 1);
+    const modeText = await popup.locator('.cgp-mode-value').boundingBox(), arrow = await popup.locator('.cgp-mode-chevron').boundingBox();
+    const modeGap = arrow.x - modeText.x - modeText.width;
+    assert.ok(modeGap >= 3 && modeGap <= 5, 'Mode text and dropdown arrow have only a small gap');
+    await stream(long + '\n\nNext streamed chunk');
+    assert.equal(await body.evaluate(el => el.scrollTop), 0);
+    await body.evaluate(el => { el.scrollTop = 240; });
+    await stream(long + '\n\nNext streamed chunk\n\nLast streamed chunk');
+    assert.equal(await body.evaluate(el => el.scrollTop), 240, 'Updates preserve the user reading position');
+    const previousBottom = await body.evaluate(el => { el.scrollTop = el.scrollHeight; return el.scrollTop; });
+    await stream(long + '\n\nNext streamed chunk\n\nLast streamed chunk\n\nAnother chunk');
+    assert.equal(await body.evaluate(el => el.scrollTop), previousBottom, 'Even reading at the bottom must not follow new output');
+    await body.evaluate(el => { el.scrollTop = 0; });
+    await stream(long, 'completed');
+    assert.equal(await body.evaluate(el => el.scrollTop), 0, 'Completion also preserves the top position');
+    assert.equal(await popup.getByRole('button', { name: '复制', exact: true }).isEnabled(), true);
+    assert.equal(await popup.getByRole('button', { name: '重试', exact: true }).isEnabled(), true);
+    assert.equal(await popup.getByRole('button', { name: '停止', exact: true }).isEnabled(), false);
+    await popup.getByLabel('思考程度').focus();
+    assert.equal(await popup.locator('.cgp-availability').isVisible(), false);
+    for (const height of [420, 300]) {
+      await page.setViewportSize({ width: 1000, height });
+      await page.waitForFunction(() => {
+        const box = window.controller.state.panel.getBoundingClientRect();
+        return box.top >= 0 && box.bottom <= innerHeight - 12;
+      });
+      const box = await popup.boundingBox();
+      assert.ok(box.y >= 0 && box.y + box.height <= height - 12, `Popup fits a ${height}px viewport`);
+      assert.ok(await body.evaluate(el => el.clientHeight < 400 && el.scrollHeight > el.clientHeight));
+      assert.equal(await popup.evaluate(el => el.scrollHeight - el.clientHeight), 0);
+      const send = await popup.getByRole('button', { name: '发送', exact: true }).boundingBox();
+      assert.ok(send.y + send.height <= height - 12);
+    }
+    await page.evaluate(() => window.controller.dispose());
+  } finally { await browser.close(); }
+});
+
 test('toolbar and popup drag without losing selection, draft, or the active conversation', async () => {
   const bundle = await build({ stdin: { contents: `import {createContentController} from './src/content/controller.js';
     window.messages=[];

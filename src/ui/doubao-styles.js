@@ -8,7 +8,7 @@ export const DOUBAO_STYLES = `
 .btnArea-GIIUrK[data-action=ask]{background:var(--cgp-soft);font-weight:650}
 .btnArea-GIIUrK:hover{background:var(--cgp-hover)}
 .container-yap8B5{display:flex;flex-direction:column;min-height:0;max-height:inherit;color:var(--cgp-text)}
-.header-container-cL372Q{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 20px 14px;flex-shrink:0}
+.header-container-cL372Q{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 16px 10px;flex-shrink:0}
 .cgp-heading{max-width:calc(50% - 26px);display:flex;align-items:center;gap:0 10px;min-width:0;flex-wrap:wrap}
 .caption-ElsTYI{color:var(--cgp-text);font-size:16px;font-weight:650;line-height:24px;letter-spacing:.02em}
 .options-node-nfubHU{display:flex;align-items:center;gap:4px;flex-shrink:0}
