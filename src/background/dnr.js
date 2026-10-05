@@ -1,6 +1,12 @@
 export const FRAME_RULE_ID = 74001;
 
-export function frameRule(extensionId) {
+// Chrome does not match extension-initiated subframes against an
+// initiatorDomains condition, so a rule scoped that way never fires for the
+// offscreen host and the hidden ChatGPT frame stays ERR_BLOCKED_BY_RESPONSE.
+// Scope by the ChatGPT URL and the sub_frame type instead: only this
+// extension's own pages embed that origin, and an ordinary webpage embedding
+// chatgpt.com keeps its own blocking headers.
+export function frameRule() {
   return {
     id: FRAME_RULE_ID,
     priority: 1,
@@ -13,7 +19,6 @@ export function frameRule(extensionId) {
     },
     condition: {
       regexFilter: '^https://chatgpt\\.com/',
-      initiatorDomains: [extensionId],
       resourceTypes: ['sub_frame'],
     },
   };
@@ -22,6 +27,6 @@ export function frameRule(extensionId) {
 export async function configureFrameRule(chrome, enabled) {
   await chrome.declarativeNetRequest.updateDynamicRules({
     removeRuleIds: [FRAME_RULE_ID],
-    addRules: enabled ? [frameRule(chrome.runtime.id)] : [],
+    addRules: enabled ? [frameRule()] : [],
   });
 }
