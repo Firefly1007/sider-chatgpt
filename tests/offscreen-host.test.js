@@ -119,6 +119,21 @@ test('rebind targets exactly the registered iframe and page/runtime commands can
   } finally { view.cleanup(); assert.equal(view.runtime.onMessage.listeners.size, 0); }
 });
 
+test('created iframe rebinds its token after the remote document commits', () => {
+  const view = fixture();
+  try {
+    view.send('OFFSCREEN_CREATE', 'late-token');
+    const frame = view.document.querySelector('iframe');
+    const calls = [];
+    Object.defineProperty(frame, 'contentWindow', { configurable: true, value: {
+      get location() { throw new DOMException('Blocked cross-origin access', 'SecurityError'); },
+      postMessage: (...args) => calls.push(args),
+    } });
+    frame.dispatchEvent(new view.dom.window.Event('load'));
+    assert.deepEqual(calls, [[{ type: 'CGP_REBIND', token: 'late-token' }, 'https://chatgpt.com']]);
+  } finally { view.cleanup(); }
+});
+
 test('offscreen document contains only the external module script, with no inline script or hiding CSS', () => {
   const dom = new JSDOM(html);
   try {

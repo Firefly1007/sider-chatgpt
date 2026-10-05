@@ -342,6 +342,18 @@ test('capability lookup preserves connected-page readiness diagnostics', async (
   assert.equal(f.commands('ADAPTER_RUN').length, 0);
 });
 
+test('offscreen frame token still binds when Chrome omits the URL fragment from sender metadata', async () => {
+  const f = fixture();
+  await f.manager.initialized;
+  const idle = f.frames.get(20), frame = f.makeFrame(idle.token, 99);
+  idle.port.disconnect();
+  frame.port.sender.url = 'https://chatgpt.com/?temporary-chat=true';
+  f.manager.connect(frame.port);
+  frame.port.onMessage.fire(msg('FRAME_READY', { token: frame.token }));
+  assert.equal(frame.port.output[0].type, 'FRAME_BOUND');
+  assert.equal(frame.port.output[0].hostType, 'offscreen');
+});
+
 test('sidepanel frame requires unpredictable token plus trusted browser sender; port replies route to bound source', async () => {
   const f = fixture();
   await f.manager.initialized;

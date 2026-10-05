@@ -90,6 +90,17 @@ export function createSessionManager(chrome, options = {}) {
     if (!result?.ok) throw Object.assign(new Error(result?.error?.message || 'Hidden ChatGPT page is unavailable.'), { code: result?.error?.code || 'OFFSCREEN_UNAVAILABLE' });
     return result;
   };
+  async function pageMessage(tabId, message) {
+    try { return await chrome.tabs.sendMessage(tabId, message, { frameId: 0 }); }
+    catch (error) {
+      // Existing tabs do not receive content scripts after an extension reload.
+      // Inject the already-built loader once, then retry the same request.
+      if (!/receiving end does not exist|could not establish connection/i.test(error?.message || '')
+        || !chrome.scripting?.executeScript) throw error;
+      await chrome.scripting.executeScript({ target: { tabId, frameIds: [0] }, files: ['content-loader.js'] });
+      return await chrome.tabs.sendMessage(tabId, message, { frameId: 0 });
+    }
+  }
   function settleRpc(endpoint) {
     for (const [id, waiting] of rpc) if (waiting.endpoint === endpoint) {
       rpc.delete(id); waiting.resolve(failure('EXECUTION_LOST', 'Execution page disconnected.'));
@@ -422,7 +433,7 @@ export function createSessionManager(chrome, options = {}) {
     if (host.inputPending) return failure('ADAPTER_BUSY', '正在附加内容，请稍后重试。');
     host.inputPending = true;
     try {
-      const result = requireOk(await chrome.tabs.sendMessage(tab.id, { channel: CHANNEL, type: 'EXTRACT_SELECTION' }, { frameId: 0 }));
+      const result = requireOk(await pageMessage(tab.id, { channel: CHANNEL, type: 'EXTRACT_SELECTION' }));
       if (typeof result.selectedText !== 'string' || !result.selectedText.trim() || result.selectedText.length > 120000)
         return failure('EMPTY_SELECTION', '请先在当前网页选择文字。');
       const text = `> ${result.selectedText.replace(/\r\n/g, '\n').replace(/\n/g, '\n> ')}\n\n`;
@@ -448,7 +459,7 @@ export function createSessionManager(chrome, options = {}) {
     if (host.inputPending) return failure('ADAPTER_BUSY', '正在附加内容，请稍后重试。');
     host.inputPending = true;
     try {
-      const result = requireOk(await chrome.tabs.sendMessage(tab.id, { channel: CHANNEL, type: 'EXTRACT_PAGE' }, { frameId: 0 }));
+      const result = requireOk(await pageMessage(tab.id, { channel: CHANNEL, type: 'EXTRACT_PAGE' }));
       const material = result.material;
       if (typeof material?.text !== 'string' || !material.text.trim() || material.text.length > 120000 || material.truncated)
         return failure('INVALID_MATERIAL', '网页正文为空、过长或不完整，未发送。');
@@ -632,10 +643,10 @@ export function createSessionManager(chrome, options = {}) {
         } catch {}
         if (urlToken !== null && message.token !== urlToken || sender.frameId === 0 && sender.tab) { port.disconnect(); return; }
         // A native ChatGPT conversation can pushState its URL and drop the original
-        // hash. In that case only a token registered to a trusted sidepanel host
-        // can bind; offscreen frames still require their URL token above.
+        // hash. Match the reported token against our registered frame in that case;
+        // top-level tab senders are still rejected below.
         const host = urlToken === null
-          ? [...hosts.values()].find((item) => item.token === message.token)
+          ? [...hosts.values()].find((item) => item.token === message.token) || slots.get(message.token)
           : slots.get(urlToken) || [...hosts.values()].find((item) => item.token === urlToken);
         if (!host) { port.disconnect(); return; }
         const old = host.endpoint;
@@ -644,7 +655,7 @@ export function createSessionManager(chrome, options = {}) {
         if (old) for (const session of sessions.values()) if (session.endpoint === old) {
           session.cancelled = true; emit(session, 'interrupted', { error: { code: 'EXECUTION_LOST', message: 'The ChatGPT frame reloaded.' } });
         }
-        const hostType = slots.has(urlToken) ? 'offscreen' : 'sidepanel';
+        const hostType = slots.has(urlToken ?? message.token) ? 'offscreen' : 'sidepanel';
         port.postMessage({ channel: CHANNEL, type: 'FRAME_BOUND', ok: true, hostType });
         if (hostType === 'sidepanel') {
           try { host.port?.postMessage({ channel: CHANNEL, type: 'SIDEPANEL_FRAME_BOUND' }); } catch {}

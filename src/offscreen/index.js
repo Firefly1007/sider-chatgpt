@@ -38,6 +38,10 @@ export function installOffscreen(document, runtime) {
         frame.width = '1280'; frame.height = '900';
         Object.assign(frame.style, { position: 'absolute', top: '0', left: '0', width: '1280px', height: '900px', border: '0' });
         frame.src = `https://chatgpt.com/?temporary-chat=true#cgp-frame=${encodeURIComponent(token)}`;
+        // ChatGPT can normalize the URL before document_idle runs and drop the
+        // fragment. Re-send the trusted token after the remote document commits
+        // so the adapter can bind even when it starts without a hash.
+        frame.addEventListener('load', () => rebindChatGPTFrame(frame, token));
         frames.set(token, { frame, used: false });
         document.body.append(frame);
       }

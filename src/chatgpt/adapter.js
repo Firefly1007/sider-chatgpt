@@ -58,8 +58,10 @@ function composerScope(document) { const composer = findComposer(document); retu
 export function findComposer(document) {
   const direct = document.getElementById('prompt-textarea');
   if (isVisible(direct) && (direct.isContentEditable || direct.getAttribute('contenteditable') === 'true' || direct.tagName === 'TEXTAREA')) return direct;
-  return first(document, '[role="textbox"][contenteditable="true"][aria-label="询问 ChatGPT"]')
-    || first(document, 'form [contenteditable="true"]') || first(document, 'form textarea');
+  return first(document, '[role="textbox"][contenteditable="true"]')
+    || first(document, '[data-composer-markdown][contenteditable="true"], [data-composer-input] [contenteditable="true"]')
+    || first(document, 'form [contenteditable="true"]')
+    || first(document, 'textarea[name="prompt-textarea"], form textarea');
 }
 export function composerText(document) {
   const element = findComposer(document);
