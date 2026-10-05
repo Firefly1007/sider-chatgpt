@@ -195,10 +195,13 @@ test('stopping before the first native submission requires a fresh task instead 
   await f.manager.handle(msg('CLOSE_SESSION', { sessionId: started.sessionId }), source());
 });
 
-test('DNR strips headers only from this extension initiated HTTPS ChatGPT subframes', () => {
-  const rule = frameRule('extension-id');
+test('DNR strips frame-blocking headers from HTTPS ChatGPT subframes', () => {
+  const rule = frameRule();
   assert.equal(rule.id, FRAME_RULE_ID);
-  assert.deepEqual(rule.condition.initiatorDomains, ['extension-id']);
+  // An initiatorDomains condition never matched extension-initiated subframes in
+  // Chrome, which left the hidden offscreen frame ERR_BLOCKED_BY_RESPONSE; the
+  // rule must stay scoped by URL and resource type only.
+  assert.equal(rule.condition.initiatorDomains, undefined);
   assert.deepEqual(rule.condition.resourceTypes, ['sub_frame']);
   assert.ok(new RegExp(rule.condition.regexFilter).test('https://chatgpt.com/'));
   assert.ok(!new RegExp(rule.condition.regexFilter).test('https://chatgpt.com.evil.example/'));

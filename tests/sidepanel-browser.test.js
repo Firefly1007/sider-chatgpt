@@ -72,6 +72,11 @@ test('real extension sidepanel defers CGP_REBIND until the ChatGPT document owns
   const fixtureHTML = `<!doctype html><html><head><meta charset="utf-8"><title>Local ChatGPT route fixture</title></head><body><p>Offline native document fixture</p><form><div id="prompt-textarea" contenteditable="true"></div><button type="button" id="composer-plus-btn">+</button></form><script>
     window.__cgpRebindMessages=[];
     window.addEventListener('message',event=>{if(event.data?.type==='CGP_REBIND')window.__cgpRebindMessages.push({origin:event.origin,isTrusted:event.isTrusted,sourceParent:event.source===parent,token:event.data.token});});
+    // A real ChatGPT navigation drops the abandoned frame hash before the adapter
+    // runs. Keeping the hash let the native document bind itself and cancelled the
+    // sidepanel retry, so whether the parent ever posted CGP_REBIND depended on
+    // scheduling; without it the trusted parent rebind is the only handshake.
+    try { window.history.replaceState(null, '', window.location.pathname + window.location.search); } catch { }
   </script></body></html>`;
   try {
     context = await chromium.launchPersistentContext(profile, {
@@ -153,7 +158,13 @@ test('real extension sidepanel defers CGP_REBIND until the ChatGPT document owns
     }
     assert.ok(nativeFrame, `Local ChatGPT document did not commit; routed=${JSON.stringify(routedChatGPT)}`);
     const token = await page.locator('#cgp-chatgpt-frame').evaluate(frame => decodeURIComponent(new URL(frame.src).hash.slice('#cgp-frame='.length)));
-    await nativeFrame.waitForFunction(expected => window.__cgpRebindMessages?.some(message => message.token === expected), token, { timeout: 12000 });
+    assert.equal(await nativeFrame.evaluate(() => window.location.hash), '', 'The fixture must model a native navigation that dropped the frame hash');
+    try {
+      await nativeFrame.waitForFunction(expected => window.__cgpRebindMessages?.some(message => message.token === expected), token, { timeout: 12000 });
+    } catch (error) {
+      const nativeState = await nativeFrame.evaluate(() => ({ href: window.location.href, hosted: Boolean(document.querySelector('[data-cgp-attach-page-host]')), recorded: window.__cgpRebindMessages })).catch(reason => ({ evaluateError: reason.message }));
+      assert.fail(`${error.message} - the native document never saw its trusted parent rebind: ${JSON.stringify({ token, nativeState, frames: page.frames().map(frame => frame.url()), mismatchConsole, consoleEvents, pageErrors, externalAttempts, routedChatGPT })}`);
+    }
     const delivered = await nativeFrame.evaluate(expected => window.__cgpRebindMessages.find(message => message.token === expected), token);
     assert.deepEqual(delivered, { origin: `chrome-extension://${extensionId}`, isTrusted: true, sourceParent: true, token }, 'The loaded native document must receive the trusted parent rebind for its own token');
     await nativeFrame.getByRole('button', { name: '附加当前网页', exact: true }).waitFor();
