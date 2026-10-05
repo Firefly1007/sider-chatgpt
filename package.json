@@ -1,6 +1,6 @@
 {
   "name": "sider-chatgpt",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "private": true,
   "type": "module",
   "description": "Edge extension using native ChatGPT webpages",
