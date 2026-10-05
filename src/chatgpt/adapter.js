@@ -55,13 +55,25 @@ function named(document, pattern, selector = 'button, [role="menuitem"], [role="
 }
 function composerScope(document) { const composer = findComposer(document); return composer?.closest('form') || composer?.closest('[data-testid="composer"]') || composer?.parentElement; }
 
+// Newer ChatGPT builds render the prompt as a plain <textarea> with no role,
+// no contenteditable and an id/name of their own (for example
+// <textarea id="mobile-composer-prompt" name="prompt">). Accept a visible,
+// writable native textarea on the composer's own identity so those builds keep
+// working, while still preferring the explicit contenteditable editor first.
+function promptTextarea(element) {
+  return element?.tagName === 'TEXTAREA' && !element.disabled && !element.readOnly ? element : null;
+}
 export function findComposer(document) {
   const direct = document.getElementById('prompt-textarea');
   if (isVisible(direct) && (direct.isContentEditable || direct.getAttribute('contenteditable') === 'true' || direct.tagName === 'TEXTAREA')) return direct;
   return first(document, '[role="textbox"][contenteditable="true"]')
     || first(document, '[data-composer-markdown][contenteditable="true"], [data-composer-input] [contenteditable="true"]')
     || first(document, 'form [contenteditable="true"]')
-    || first(document, 'textarea[name="prompt-textarea"], form textarea');
+    || first(document, '#mobile-composer-prompt')
+    || promptTextarea(first(document, 'textarea[name="prompt-textarea"], textarea[name="prompt"]'))
+    || promptTextarea(first(document, 'form textarea'))
+    || promptTextarea(first(document, 'textarea'))
+    || first(document, 'form textarea');
 }
 export function composerText(document) {
   const element = findComposer(document);

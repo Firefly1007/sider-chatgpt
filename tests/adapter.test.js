@@ -666,6 +666,49 @@ test('local placeholder conversion rejects changed message identity and later un
   }
 });
 
+// Live ChatGPT was observed serving a lightweight composer variant: a plain
+// <textarea id="mobile-composer-prompt" name="prompt"> with no role, no
+// contenteditable and no #prompt-textarea. The adapter must still find and use it.
+function lightweightFixture() {
+  const dom = new JSDOM(`<!doctype html><html><body>
+    <button data-testid="accounts-profile-button">Profile</button>
+    <main><h1>Temporary Chat</h1><section id="messages"></section>
+    <div data-testid="composer"><div><textarea id="mobile-composer-prompt" name="prompt" placeholder="询问 ChatGPT" aria-label="与 ChatGPT 聊天"></textarea></div>
+    <div><button type="button" data-testid="model-switcher-dropdown-button">Instant</button>
+    <button type="button" data-testid="send-button">Send</button></div></div></main></body></html>`,
+  { url: 'https://chatgpt.com/?temporary-chat=true', pretendToBeVisual: true });
+  const document = dom.window.document, events = [];
+  const adapter = new ChatGPTAdapter(document, { emit: event => events.push(event), timeoutMs: 30, responseTimeoutMs: 70 });
+  let sends = 0;
+  document.querySelector('[data-testid="send-button"]').onclick = () => {
+    sends++;
+    const user = document.createElement('div'); user.dataset.messageAuthorRole = 'user'; user.dataset.messageId = 'u-' + sends;
+    user.textContent = document.getElementById('mobile-composer-prompt').value;
+    document.querySelector('#messages').append(user);
+    document.getElementById('mobile-composer-prompt').value = '';
+    const article = document.createElement('article'), assistant = document.createElement('div');
+    assistant.dataset.messageAuthorRole = 'assistant'; assistant.dataset.messageId = 'a-' + sends;
+    const body = document.createElement('div'); body.className = 'markdown'; body.textContent = 'Lightweight answer';
+    assistant.append(body); article.append(assistant);
+    const copy = document.createElement('button'); copy.dataset.testid = 'copy-turn-action-button'; copy.textContent = 'Copy'; article.append(copy);
+    document.querySelector('#messages').append(article);
+  };
+  return { dom, document, events, adapter, get sends() { return sends; } };
+}
+
+test('lightweight textarea composer without role or #prompt-textarea is detected and used', async () => {
+  const f = lightweightFixture();
+  assert.equal(findComposer(f.document).id, 'mobile-composer-prompt');
+  const state = probe(f.document);
+  assert.equal(state.hasComposer, true); assert.equal(state.ready, true);
+  const result = await f.adapter.start({ requestId: 'r1', sessionId: 's1', prompt: 'lightweight question', mode: 'instant', search: false, temporary: true });
+  await f.adapter.active.done;
+  assert.equal(f.sends, 1);
+  assert.equal(f.document.querySelector('[data-message-author-role="user"]').textContent, 'lightweight question');
+  assert.equal(f.events.at(-1).state, 'completed', JSON.stringify(f.events.at(-1)));
+  assert.equal(result.requestId, 'r1');
+});
+
 test('ready composer waits for native model button delayed mounting before send', async () => {
   const f = fixture(); f.nativeSend();
   f.document.querySelector('[data-testid="model-switcher-dropdown-button"]').remove();
