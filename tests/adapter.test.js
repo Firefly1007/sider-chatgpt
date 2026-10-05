@@ -439,6 +439,17 @@ test('actual no-id Chinese textbox is usable and unrelated forms are excluded', 
   fillComposer(f.document, 'hello'); assert.equal(editor.textContent, 'hello');
 });
 
+test('English composer outside a form is detected without relying on a localized label', () => {
+  const f = fixture();
+  const editor = findComposer(f.document);
+  editor.remove();
+  f.document.body.insertAdjacentHTML('beforeend', '<div role="textbox" contenteditable="true" aria-label="Chat with ChatGPT"></div>');
+  const detected = findComposer(f.document);
+  assert.equal(detected.getAttribute('aria-label'), 'Chat with ChatGPT');
+  fillComposer(f.document, 'hello');
+  assert.equal(detected.textContent, 'hello');
+});
+
 test('mode/search/temporary changes during send readiness block submission', async () => {
   for (const change of ['mode', 'search', 'temporary']) {
     const f = fixture(); f.nativeSend();

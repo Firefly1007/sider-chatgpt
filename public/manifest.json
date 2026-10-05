@@ -8,6 +8,7 @@
     "storage",
     "tabs",
     "sidePanel",
+    "scripting",
     "webNavigation",
     "declarativeNetRequestWithHostAccess"
   ],
